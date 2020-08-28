@@ -12,13 +12,20 @@ def main_page_setup():
     url = f'https://de.indeed.com/Jobs?l=Berlin&sort=date&lang=en&start=0'
     main_jobs_page = requests.get(url).text
     soup = BeautifulSoup(main_jobs_page, 'lxml')
+    return soup
 
-    # Prepare list of job links
+# Prepare list of job links
+def prepare_job_links(soup):
     job_links = []
     results = soup.find_all('div', {"data-tn-component":"organicJob"})
     for i in range(len(results)):
         job_link = f"{URL_PREFIX}{results[i].h2.a['href']}"
         job_links.append(job_link)
+    return job_links
+
+# Pass links to single page scraper function
+def scrape_page_data():
+    pass
 
 
 
