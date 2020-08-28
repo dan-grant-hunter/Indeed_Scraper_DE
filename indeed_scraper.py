@@ -5,7 +5,8 @@ from datetime import datetime
 
 URL_PREFIX = 'https://de.indeed.com'
 NUMBER_OF_SEARCH_PAGES = 1
-PAGE_RESULTS_NUMBERS = list(range(0, NUMBER_OF_SEARCH_PAGES*11, 10))
+PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
+URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
 
 # Loop through number of search pages
 def main_page_setup(search_page):
@@ -41,31 +42,22 @@ def scrape_page_data(soup):
     return job_data
 
 # Export data to spreadsheet
-def export_data(title, company, location, job_info):
-    job_data = pd.DataFrame(
-    {
-        'title': title,
-        'company': company,
-        'location': location,
-        'job_info': job_info,
-    })
-
-    print(job_data)
-
-    #job_data.to_csv(r'/home/dan/Desktop/job_data.csv')
-
+def export_data(job_dict):
+    job_data = pd.DataFrame.from_dict(job_dict, orient='index')
+    # print(job_data)
+    # or
+    # Export to CSV
+    job_data.to_csv(r'/home/dan/Desktop/job_data.csv')
 
 def main():
     job_dict = {}
     count = 1
     # Loop through each page of job adverts
-    for search_page in PAGE_RESULTS_NUMBERS:
+    for search_page in URL_SUFFIX_NUMBERS:
         # Create soup object for current main jobs listing page
         soup = main_page_setup(search_page)
         # Extract job links from page
         job_links = prepare_job_links(soup)
-
-
         # Loop through each link, extract all data from job listing into list and add to dict
         for job_link in job_links:
             # Create soup object for individual job listing page
@@ -77,8 +69,7 @@ def main():
             # increment count
             count += 1
 
-    print(job_dict)
-    # # # export_data(title, company, location, job_info)
+    export_data(job_dict)
 
 
 
