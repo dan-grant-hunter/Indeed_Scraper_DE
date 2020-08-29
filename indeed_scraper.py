@@ -10,7 +10,8 @@ from datetime import datetime
 import indeed_job_info as indeed
 
 # Constant variables
-NUMBER_OF_SEARCH_PAGES = 5
+# Change NUMBER_OF_SEARCH_PAGES to specify how many pages to be scraped
+NUMBER_OF_SEARCH_PAGES = 1
 PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
 URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
 

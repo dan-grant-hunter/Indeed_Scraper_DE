@@ -90,5 +90,5 @@ def export_data(job_dict):
     # print(job_data)
     # or
     # Export to CSV
-    job_data.to_csv(r'/home/dan/Desktop/indeed_job_data_{}.csv'.format(file_date))
+    job_data.to_csv(r'output_data/indeed_job_data_{}.csv'.format(file_date))
 
