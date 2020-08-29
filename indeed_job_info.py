@@ -1,5 +1,6 @@
-# from bs4 import BeautifulSoup
-# import requests
+from bs4 import BeautifulSoup
+import requests
+import re
 
 # test_link1 = 'https://de.indeed.com/rc/clk?jk=edd4176699c2f1d7&fccid=d79d00cbbf5795e0&vjs=3'
 # test_link2 = 'https://de.indeed.com/rc/clk?jk=fd4ff7f1657d391f&fccid=263d04306603c815&vjs=3'
@@ -53,8 +54,42 @@
 
 # links_that_dont_work = [7, 15]
 
-NUMBER_OF_SEARCH_PAGES = 10
-PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
-URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
+# NUMBER_OF_SEARCH_PAGES = 10
+# PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
+# URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
 
-print(URL_SUFFIX_NUMBERS)
+# print(URL_SUFFIX_NUMBERS)
+
+# URL_PREFIX = 'https://de.indeed.com'
+
+# div_class = "jobsearch-SerpJobCard unifiedRow row result clickcard"
+
+# after_results = "[i].h2.a['href']"
+
+# # Loop through number of search pages
+# def main_page_setup(search_page):
+#     # Create soup object for main jobs page
+#     url = f'https://de.indeed.com/Jobs?l=Berlin&sort=date&lang=en&start={search_page}'
+#     main_jobs_page = requests.get(url).text
+#     soup = BeautifulSoup(main_jobs_page, 'lxml')
+#     return soup
+
+# # Prepare list of job links
+# def prepare_job_links(soup):
+#     job_links = []
+#     results = soup.select('div[class*="jobsearch-SerpJobCard unifiedRow"]')
+
+
+#     for i in range(len(results)):
+#         job_link = f"{URL_PREFIX}{results[i].h2.a['href']}"
+#         print(job_link)
+#         job_links.append(job_link)
+#     print(len(job_links))
+
+# def main():
+#     soup = main_page_setup(0)
+#     prepare_job_links(soup)
+
+
+# main()
+

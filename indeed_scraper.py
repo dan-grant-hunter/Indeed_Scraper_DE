@@ -8,6 +8,9 @@ NUMBER_OF_SEARCH_PAGES = 1
 PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
 URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
 
+company_class = "icl-u-lg-mr--sm icl-u-xs-mr--xs"
+location_class = "icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle jobsearch-DesktopStickyContainer-subtitle"
+
 # Loop through number of search pages
 def main_page_setup(search_page):
     # Create soup object for main jobs page
@@ -19,7 +22,7 @@ def main_page_setup(search_page):
 # Prepare list of job links
 def prepare_job_links(soup):
     job_links = []
-    results = soup.find_all('div', {"data-tn-component":"organicJob"})
+    results = soup.select('div[class*="jobsearch-SerpJobCard unifiedRow"]')
     for i in range(len(results)):
         job_link = f"{URL_PREFIX}{results[i].h2.a['href']}"
         job_links.append(job_link)
@@ -35,8 +38,8 @@ def single_page_setup(job_link):
 # Scrape data from individual job listing page
 def scrape_page_data(soup):
     title = soup.find('h1').text
-    company = soup.find('div', class_="icl-u-lg-mr--sm icl-u-xs-mr--xs").text
-    location = soup.find('div', class_="icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle jobsearch-DesktopStickyContainer-subtitle").find_all('div')[-1].text
+    company = soup.find('div', class_=f'{company_class}').text
+    location = soup.find('div', class_=f'{location_class}').find_all('div')[-1].text
     job_info = soup.find('div', id="jobDescriptionText").text
     job_data = [title, company, location, job_info]
     return job_data
