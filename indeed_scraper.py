@@ -43,7 +43,8 @@ def scrape_page_data(soup):
 
 # Export data to spreadsheet
 def export_data(job_dict):
-    job_data = pd.DataFrame.from_dict(job_dict, orient='index')
+    job_data = pd.DataFrame.from_dict(job_dict, orient='index',
+        columns=['Job Title', 'Company', 'Location', 'Job Description'])
     # print(job_data)
     # or
     # Export to CSV
