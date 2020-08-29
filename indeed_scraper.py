@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from datetime import datetime
 
 # Constant variables
 URL_PREFIX = 'https://de.indeed.com'
@@ -13,6 +14,7 @@ URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
 now = datetime.now()
 current_date = now.strftime("%d/%m/%Y")
 current_time = now.strftime("%H:%M:%S")
+file_date = now.strftime("%Y_%m_%d")
 date_time_list = [current_date, current_time]
 
 # German to English translations
@@ -90,7 +92,8 @@ def export_data(job_dict):
     # print(job_data)
     # or
     # Export to CSV
-    job_data.to_csv(r'/home/dan/Desktop/job_data.csv')
+    job_data.to_csv(r'/home/dan/Desktop/indeed_job_data_{}.csv'.format(file_date))
+
 
 def main():
     # Create empty dictionary to store job listing information for each job
@@ -120,8 +123,8 @@ def main():
     export_data(job_dict)
 
 
-
-main()
+if __name__ == '__main__':
+    main()
 
 
 
