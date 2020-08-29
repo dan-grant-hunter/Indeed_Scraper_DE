@@ -1,95 +1,94 @@
+"""All of the necessary variables and functions to scrape english-speaking,
+berlin-based job information data from indeed Germany"""
+
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 import requests
-import re
+import pandas as pd
 
-# test_link1 = 'https://de.indeed.com/rc/clk?jk=edd4176699c2f1d7&fccid=d79d00cbbf5795e0&vjs=3'
-# test_link2 = 'https://de.indeed.com/rc/clk?jk=fd4ff7f1657d391f&fccid=263d04306603c815&vjs=3'
-# test_link3 = 'https://de.indeed.com/company/Die-Datenschmiede/jobs/Machine-Learning-Scientist-a98985a165f75ab9?fccid=8e1751206f578cc3&vjs=3'
-# test_link4 = 'https://de.indeed.com/rc/clk?jk=c9c6f27387a9438e&fccid=d2aae6d9e2355253&vjs=3'
-# test_link5 = 'https://de.indeed.com/rc/clk?jk=8658efe7f9d8c654&fccid=5cd2518607580830&vjs=3'
-# test_link6 = 'https://de.indeed.com/rc/clk?jk=60e747ffc47dbb8b&fccid=1992e9a12e091329&vjs=3'
-# test_link7 = 'https://de.indeed.com/rc/clk?jk=e95fbd038c600750&fccid=da1e2e1c7bbb46be&vjs=3'
-# test_link8 = 'https://de.indeed.com/rc/clk?jk=d3715187cc2fc0d1&fccid=1992e9a12e091329&vjs=3'
-# test_link9 = 'https://de.indeed.com/rc/clk?jk=9db5d66ab5734fdc&fccid=a54066e6670be1ce&vjs=3'
-# test_link10 = 'https://de.indeed.com/rc/clk?jk=c87f256b6c7f42c5&fccid=66cb79b1fb76b1d5&vjs=3'
-# test_link11= 'https://de.indeed.com/rc/clk?jk=fe3fb1dcff9d0158&fccid=150614b16553c72a&vjs=3'
-# test_link12 = 'https://de.indeed.com/rc/clk?jk=bd97c23a6b43826d&fccid=b9561145e1e02981&vjs=3'
-# test_link13 = 'https://de.indeed.com/rc/clk?jk=1c451034b3c0a889&fccid=af31e16a17ddafd1&vjs=3'
-# test_link14 = 'https://de.indeed.com/rc/clk?jk=f3bd3ff0f4a4dec9&fccid=a54066e6670be1ce&vjs=3'
-# test_link15 = 'https://de.indeed.com/rc/clk?jk=7a9ca6f1ea2fb6b2&fccid=941c4fb004be80b8&vjs=3'
+# Constant variables
+URL_PREFIX = 'https://de.indeed.com'
 
+# Time and date variables
+now = datetime.now()
+file_date = now.strftime("%Y_%m_%d")
 
-# # TESTING
-# def test_single_page_setup(test_link):
-#     single_page_url = test_link
-#     job_information = requests.get(single_page_url).text
-#     soup = BeautifulSoup(job_information, 'lxml')
+# Div class selectors
+company_class = "icl-u-lg-mr--sm icl-u-xs-mr--xs"
+location_class = "icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle " \
+                 "jobsearch-DesktopStickyContainer-subtitle"
 
-#     # Scrape all relevant information
-#     title = soup.find('h1').text
-#     company = soup.find('div', class_="icl-u-lg-mr--sm icl-u-xs-mr--xs").text
-#     location = soup.find('div', class_="icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle jobsearch-DesktopStickyContainer-subtitle").find_all('div')[-1].text
-#     job_info = soup.find('div', id="jobDescriptionText").text
+# German to English translations
+translations = {
+        'Gerade veröffentlicht': 'Just published',
+        'Heute': 'Today',
+        'vor 1 Tag': '1 day ago',
+        'vor 2 Tagen': '2 days ago',
+        'vor 3 Tagen': '3 days ago',
+        'vor 4 Tagen': '4 days ago',
+        'vor 5 Tagen': '5 days ago',
+        'vor 6 Tagen': '6 days ago',
+        'vor 7 Tagen': '7 days ago',
+        'vor 8 Tagen': '8 days ago',
+        'vor 9 Tagen': '9 days ago',
+        'vor 10 Tagen': '10 days ago',
+        'vor 11 Tagen': '11 days ago',
+        'vor 12 Tagen': '12 days ago',
+        'vor 13 Tagen': '13 days ago',
+        'vor 14 Tagen': '14 days ago',
+        'Gerade geschaltet': 'Just switched',
+        'Vor mehr als 30 Tagen' : 'More than 30 days ago',
+}
 
-#     data_list = [title, company, location, job_info]
-#     print(data_list)
+def main_page_setup(search_page):
+    """Create soup object for main jobs page"""
+    url = f'https://de.indeed.com/Jobs?l=Berlin&sort=date&lang=en&start={search_page}'
+    main_jobs_page = requests.get(url).text
+    soup = BeautifulSoup(main_jobs_page, 'lxml')
+    return soup
 
-# # # Set up links for scraping
-# # def single_page_setup(test_link):
-# #     single_page_url = test_link
-# #     job_information = requests.get(single_page_url).text
-# #     soup = BeautifulSoup(job_information, 'lxml')
+def prepare_job_links(soup):
+    """Prepare list of job links from header titles"""
+    job_links = []
+    results = soup.select('div[class*="jobsearch-SerpJobCard unifiedRow"]')
+    for i in range(len(results)):
+        job_link = f"{URL_PREFIX}{results[i].h2.a['href']}"
+        job_links.append(job_link)
+    return job_links
 
-# #     # Scrape all relevant information
-#     title = soup.find('h1').text
-#     company = soup.find('div', class_="icl-u-lg-mr--sm icl-u-xs-mr--xs").text
-#     location = soup.find('div', class_="icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle jobsearch-DesktopStickyContainer-subtitle").find_all('div')[-1].text
-#     job_info = soup.find('div', id="jobDescriptionText").text
+def capture_time_posted(soup):
+    """Prepare list of times when each job was posted"""
+    posted_times = []
+    results = soup.select('span[class*="date "]')
+    for i in range(len(results)):
+        posted_time = results[i].text
+        eng_posted_time = translations[posted_time]
+        posted_times.append([eng_posted_time])
+    return posted_times
 
-# #     data_list = [title, company, location, job_info]
-# #     print(data_list)
+def single_page_setup(job_link):
+    """Create soup object for individual job page"""
+    job_link_url = job_link
+    job_information = requests.get(job_link_url).text
+    soup = BeautifulSoup(job_information, 'lxml')
+    return soup
 
+def scrape_page_data(soup):
+    """Scrape data from individual job listing page"""
+    title = soup.find('h1').text
+    company = soup.find('div', class_=f'{company_class}').text
+    location = soup.find('div', class_=f'{location_class}').find_all('div')[-1].text
+    job_info = soup.find('div', id="jobDescriptionText").text
+    job_data = [title, company, location, job_info]
+    return job_data
 
-# test_single_page_setup(test_link15)
-
-# links_that_dont_work = [7, 15]
-
-# NUMBER_OF_SEARCH_PAGES = 10
-# PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
-# URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
-
-# print(URL_SUFFIX_NUMBERS)
-
-# URL_PREFIX = 'https://de.indeed.com'
-
-# div_class = "jobsearch-SerpJobCard unifiedRow row result clickcard"
-
-# after_results = "[i].h2.a['href']"
-
-# # Loop through number of search pages
-# def main_page_setup(search_page):
-#     # Create soup object for main jobs page
-#     url = f'https://de.indeed.com/Jobs?l=Berlin&sort=date&lang=en&start={search_page}'
-#     main_jobs_page = requests.get(url).text
-#     soup = BeautifulSoup(main_jobs_page, 'lxml')
-#     return soup
-
-# # Prepare list of job links
-# def prepare_job_links(soup):
-#     job_links = []
-#     results = soup.select('div[class*="jobsearch-SerpJobCard unifiedRow"]')
-
-
-#     for i in range(len(results)):
-#         job_link = f"{URL_PREFIX}{results[i].h2.a['href']}"
-#         print(job_link)
-#         job_links.append(job_link)
-#     print(len(job_links))
-
-# def main():
-#     soup = main_page_setup(0)
-#     prepare_job_links(soup)
-
-
-# main()
+def export_data(job_dict):
+    """Create DataFrame and export data to CSV file"""
+    job_data = pd.DataFrame.from_dict(job_dict, orient='index',
+        columns=['Date', 'Time', 'Posted', 'Job Title', 'Company', 'Location', 'Job Description', 'Job URL'])
+    # print(job_data)
+    # or
+    # Export to CSV
+    job_data.to_csv(r'/home/dan/Desktop/indeed_job_data_{}.csv'.format(file_date))
 
