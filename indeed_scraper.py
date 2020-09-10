@@ -9,11 +9,17 @@ from datetime import datetime
 
 import indeed_job_info as indeed
 
+# Change number_of_search_pages to specify how many pages to be scraped
+number_of_search_pages = 3
+
 # Constant variables
-# Change NUMBER_OF_SEARCH_PAGES to specify how many pages to be scraped
-NUMBER_OF_SEARCH_PAGES = 1
 PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
-URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:NUMBER_OF_SEARCH_PAGES]
+URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:number_of_search_pages]
+
+# Location, Sorting and Language
+location = "Berlin"
+sort_type = "date"
+language = "en"
 
 # Time and date variables
 now = datetime.now()
@@ -29,7 +35,7 @@ def main():
     # Loop through each page of job adverts
     for search_page in URL_SUFFIX_NUMBERS:
         # Create soup object for current main jobs listing page
-        soup = indeed.main_page_setup(search_page)
+        soup = indeed.main_page_setup(search_page, location, sort_type, language)
         # Extract job links from page
         job_links = indeed.prepare_job_links(soup)
         # Extract the times each job was posted from the main jobs page

@@ -16,7 +16,8 @@ file_date = now.strftime("%Y_%m_%d")
 
 # Div class selectors
 company_class = "icl-u-lg-mr--sm icl-u-xs-mr--xs"
-location_class = "icl-u-xs-mt--xs icl-u-textColor--secondary jobsearch-JobInfoHeader-subtitle " \
+location_class = "icl-u-xs-mt--xs icl-u-textColor--secondary " \
+                 "jobsearch-JobInfoHeader-subtitle " \
                  "jobsearch-DesktopStickyContainer-subtitle"
 
 # German to English translations
@@ -41,9 +42,10 @@ translations = {
         'Vor mehr als 30 Tagen' : 'More than 30 days ago',
 }
 
-def main_page_setup(search_page):
+def main_page_setup(search_page, location, sort_type, language):
     """Create soup object for main jobs page"""
-    url = f'https://de.indeed.com/Jobs?l=Berlin&sort=date&lang=en&start={search_page}'
+    url = f'https://de.indeed.com/Jobs?l={location}&sort={sort_type}' \
+                                f'&lang={language}&start={search_page}'
     main_jobs_page = requests.get(url).text
     soup = BeautifulSoup(main_jobs_page, 'lxml')
     return soup
