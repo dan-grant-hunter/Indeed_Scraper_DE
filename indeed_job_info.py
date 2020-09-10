@@ -77,7 +77,13 @@ def single_page_setup(job_link):
 def scrape_page_data(soup):
     """Scrape data from individual job listing page"""
     title = soup.find('h1').text
-    company = soup.find('div', class_=f'{company_class}').text
+
+    company_name_provided = soup.find('div', class_=f'{company_class}')
+    if company_name_provided:
+        company = soup.find('div', class_=f'{company_class}').text
+    else:
+        company = "N/A"
+
     location = soup.find('div', class_=f'{location_class}').find_all('div')[-1].text
     job_info = soup.find('div', id="jobDescriptionText").text
     job_data = [title, company, location, job_info]
