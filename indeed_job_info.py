@@ -1,5 +1,5 @@
-"""All of the necessary variables and functions to scrape english-speaking,
-berlin-based job information data from indeed Germany"""
+"""All of the necessary variables and functions to scrape English-speaking,
+Berlin-based job information data from Indeed Germany"""
 
 from datetime import datetime
 
@@ -80,6 +80,7 @@ def scrape_page_data(soup):
     """Scrape data from individual job listing page"""
     title = soup.find('h1').text
 
+    # Handle job listings where company name is not provided
     company_name_provided = soup.find('div', class_=f'{company_class}')
     if company_name_provided:
         company = soup.find('div', class_=f'{company_class}').text
@@ -94,9 +95,8 @@ def scrape_page_data(soup):
 def export_data(job_dict):
     """Create DataFrame and export data to CSV file"""
     job_data = pd.DataFrame.from_dict(job_dict, orient='index',
-        columns=['Date', 'Time', 'Posted', 'Job Title', 'Company', 'Location', 'Job Description', 'Job URL'])
-    # print(job_data)
-    # or
+        columns=['Date', 'Time', 'Posted', 'Job Title', 'Company',
+                 'Location', 'Job Description', 'Job URL'])
     # Export to CSV
     job_data.to_csv(r'output_data/indeed_job_data_{}.csv'.format(file_date))
 

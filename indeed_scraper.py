@@ -1,8 +1,8 @@
 """
-Scrapes english-speaking, berlin-based, job information from indeed
-Germany including job title, company, location, job description
-and job URL and then outputs data to a CSV file. Outputted data
-also includes date and time when scrape ws performed.
+Scrapes English-speaking, Berlin-based, job information from Indeed
+Germany including Job Title, Company, Location, Job Description
+and Job URL and then outputs data to a CSV file. Outputted data
+also includes date and time when scrape was performed.
 """
 
 from datetime import datetime
@@ -16,7 +16,7 @@ number_of_search_pages = 3
 PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
 URL_SUFFIX_NUMBERS = PAGE_RESULTS_NUMBERS[:number_of_search_pages]
 
-# Location, Sorting and Language
+# Location, sorting and language
 location = "Berlin"
 sort_type = "date"
 language = "en"
