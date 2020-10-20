@@ -10,7 +10,7 @@ from datetime import datetime
 import indeed_job_info as indeed
 
 # Change number_of_search_pages to specify how many pages to be scraped
-number_of_search_pages = 3
+number_of_search_pages = 25
 
 # Constant variables
 PAGE_RESULTS_NUMBERS = list(range(0, 300, 10))
